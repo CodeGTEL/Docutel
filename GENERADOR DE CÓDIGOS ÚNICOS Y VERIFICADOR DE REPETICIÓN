@@ -1,0 +1,51 @@
+# GENERADOR DE CÓDIGOS ÚNICOS Y VERIFICADOR DE REPETICIÓN
+
+# Este programa genera una lista de códigos alfanuméricos únicos, asegurándose de que no se repitan
+# con los códigos existentes en un archivo ubicado en el escritorio. Los códigos generados se guardan en un archivo de texto
+# en el escritorio del usuario, y se proporciona una notificación sobre la ausencia o presencia de códigos repetidos.
+
+import random
+import string
+import os
+
+cantidad = 103
+
+# Función para generar un código alfanumérico de 8 dígitos
+def generate_code():
+    return ''.join(random.choices(string.ascii_letters + string.digits, k=8))
+
+# Función para verificar si un código está presente en un archivo
+def not_include(code, filename):
+    with open(filename, 'r') as file:
+        return code not in file.read()
+
+# Crear una lista para almacenar los códigos generados
+codes = set()
+
+# Obtener la ruta del escritorio del usuario
+desktop_path = os.path.join(os.path.expanduser("~"), "Desktop")
+
+# Construir la ruta del archivo de entrada en el escritorio
+input_file = os.path.join(desktop_path, "Códigos.txt")
+
+# Generar 738 códigos únicos que no estén en el archivo de entrada
+while len(codes) < cantidad:
+    new_code = generate_code()
+    if not_include(new_code, input_file):
+        codes.add(new_code)
+
+# Verificar si hay códigos repetidos
+if len(codes) == cantidad:
+    print("No se encontraron códigos repetidos.")
+else:
+    print("Se encontraron códigos repetidos.")
+
+# Construir la ruta del archivo de salida en el escritorio
+output_file = os.path.join(desktop_path, "codigos_" + str(cantidad) + ".txt")
+
+# Guardar la lista de códigos en un archivo de texto en el escritorio
+with open(output_file, "w") as file:
+    for code in codes:
+        file.write(code + "\n")
+
+print(f"Lista de códigos generada y guardada en '{output_file}'.")
